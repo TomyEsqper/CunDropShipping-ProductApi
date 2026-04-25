@@ -1,6 +1,6 @@
-// Improtamos las dos "fichas" que vamos a traducir entre si
 using CunDropShipping.domain.Entity;
 using CunDropShipping.infrastructure.Entity;
+
 namespace CunDropShipping.infrastructure.Mapper;
 
 /// <summary>
@@ -9,6 +9,27 @@ namespace CunDropShipping.infrastructure.Mapper;
 /// </summary>
 public class InfrastructureMapperImpl : IInfrastructureMapper
 {
+    private static string StatusToDb(ProductStatus v) => v switch
+    {
+        ProductStatus.Draft      => "DRAFT",
+        ProductStatus.Active     => "ACTIVE",
+        ProductStatus.Inactive   => "INACTIVE",
+        ProductStatus.OutOfStock => "OUT_OF_STOCK",
+        ProductStatus.Banned     => "BANNED",
+        ProductStatus.Deleted    => "DELETED",
+        _                        => "DRAFT"
+    };
+
+    private static ProductStatus DbToStatus(string v) => v?.ToUpper() switch
+    {
+        "DRAFT"        => ProductStatus.Draft,
+        "ACTIVE"       => ProductStatus.Active,
+        "INACTIVE"     => ProductStatus.Inactive,
+        "OUT_OF_STOCK" => ProductStatus.OutOfStock,
+        "BANNED"       => ProductStatus.Banned,
+        "DELETED"      => ProductStatus.Deleted,
+        _              => ProductStatus.Draft
+    };
     /// <summary>
     /// Convierte una entidad de dominio a su representación de infraestructura.
     /// </summary>
@@ -18,12 +39,20 @@ public class InfrastructureMapperImpl : IInfrastructureMapper
     {
         return new ProductEntity
         {
-            // ... y copiamos los valores campo por campo.
-            Name = domainProduct.Name,
+            IdProduct = domainProduct.IdProduct,
+            SellerId = domainProduct.SellerId,
+            SubCategoryId = domainProduct.SubCategoryId,
+            Sku = domainProduct.Sku,
+            NameProduct = domainProduct.NameProduct,
             Description = domainProduct.Description,
             Price = domainProduct.Price,
-            Stock = domainProduct.Stock
-        };      }
+            CurrentPrice = domainProduct.CurrentPrice,
+            StockQuantity = domainProduct.StockQuantity,
+            ProductStatus = StatusToDb(domainProduct.ProductStatus),
+            CreatedAt = domainProduct.CreatedAt,
+            UpdatedAt = domainProduct.UpdatedAt
+        };
+    }
 
     /// <summary>
     /// Convierte una lista de entidades de dominio a una lista de entidades de infraestructura.
@@ -50,12 +79,18 @@ public class InfrastructureMapperImpl : IInfrastructureMapper
     {
         return new DomainProductEntity
         {
-            // ... y copiamos los valores campo por campo.
-            Id = domainProduct.Id,
-            Name = domainProduct.Name,
+            IdProduct = domainProduct.IdProduct,
+            SellerId = domainProduct.SellerId,
+            SubCategoryId = domainProduct.SubCategoryId,
+            Sku = domainProduct.Sku,
+            NameProduct = domainProduct.NameProduct,
             Description = domainProduct.Description,
             Price = domainProduct.Price,
-            Stock = domainProduct.Stock
+            CurrentPrice = domainProduct.CurrentPrice,
+            StockQuantity = domainProduct.StockQuantity,
+            ProductStatus = DbToStatus(domainProduct.ProductStatus),
+            CreatedAt = domainProduct.CreatedAt,
+            UpdatedAt = domainProduct.UpdatedAt
         };
     }
 

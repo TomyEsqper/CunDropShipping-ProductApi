@@ -1,5 +1,83 @@
-bin/
-obj/
-/packages/
+# ------------------------------
+# Build outputs
+# ------------------------------
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa]rm/
+[Aa]rm64/
+bld/
+artifacts/
+
+# ------------------------------
+# IDE / Editor
+# ------------------------------
+.vs/
+.vscode/
+.idea/
 riderModule.iml
 /_ReSharper.Caches/
+*.DotSettings.user
+*.suo
+*.user
+*.userosscache
+*.userprefs
+*.sln.docstates
+*.swp
+*.swo
+*~
+
+# ------------------------------
+# NuGet
+# ------------------------------
+packages/
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+
+# ------------------------------
+# Logs / temp
+# ------------------------------
+[Ll]og/
+[Ll]ogs/
+*.log
+*.tmp
+*.pidb
+*.svclog
+
+# ------------------------------
+# Coverage
+# ------------------------------
+coverage/
+*.coverage
+*.coveragexml
+
+# ------------------------------
+# Database/local runtime files
+# ------------------------------
+*.db
+*.db-shm
+*.db-wal
+
+# ------------------------------
+# ASP.NET scaffolding
+# ------------------------------
+ScaffoldingReadMe.txt
+
+# ------------------------------
+# Local config / secrets
+# ------------------------------
+appsettings.Development.json
+appsettings.Local.json
+.env
+.env.local
+
+# ------------------------------
+# OS files
+# ------------------------------
+Thumbs.db
+.DS_Store

@@ -38,7 +38,7 @@ public class Repository
         // 1. Obtiene los datos crudos de la BD.
         var productEntities = _context.Products
             .AsNoTracking()
-            .OrderBy(p => p.Id)
+            .OrderBy(p => p.IdProduct)
             .ToList();
         
         // 2. Usa el mapper para traducir y devolver el resultado.
@@ -79,7 +79,7 @@ public class Repository
      // 2. anade la nueva entidad al DbContext. Aun no esta en la BD.
      _context.Products.Add(infraProduct);
      
-     // 3. Confirma la trasaccion y guarda lso cambio en la base de  datos.
+     // 3. Confirma la trasaccion y guarda los cambio en la base de datos.
      _context.SaveChanges();
      
      // 4. EF actualiza el 'infraProduct' con el ID generado por la BD.
@@ -105,10 +105,10 @@ public class Repository
         }
         
         // 2. MODIFICAR: Actualizamos las propiedades del producto que encontramos.
-        existingProduct.Name = domainProduct.Name;
+        existingProduct.NameProduct = domainProduct.NameProduct;
         existingProduct.Description = domainProduct.Description;
         existingProduct.Price = domainProduct.Price;
-        existingProduct.Stock = domainProduct.Stock;
+        existingProduct.StockQuantity = domainProduct.StockQuantity;
         
         // 3. GUARDAR: Guardamos los cambios. Como EF esta "rastreando" a 'existingProduct',
         // sabe que debe generar un comando UPDATE, no un INSERT.
@@ -118,31 +118,18 @@ public class Repository
         return _mapper.ToDomainProductEntity(existingProduct);
     }
 
-    /// <summary>
-    /// Elimina un producto identificado por su id.
-    /// </summary>
-    /// <param name="id">Identificador del producto a eliminar.</param>
-    /// <param name="domainProduct">Entidad de dominio (opcional) que puede usarse para validaciones.</param>
-    /// <returns>La entidad de dominio eliminada o null si no existe.</returns>
-    public DomainProductEntity DeleteProduct(int id, DomainProductEntity domainProduct)
+    public void DeleteProduct(int idProduct)
     {
-        // 1. BUSCAR: Primero, encontramos el producto que ya existe en la base de datos.
-        var existingProduct = _context.Products.Find(id);
+        var existingProduct = _context.Products.Find(idProduct);
         
-        // Si no lo encontramos, no podemos eliminarlo. Devolvemos null.
         if (existingProduct == null)
         {
-            return null;
+            throw new KeyNotFoundException($"Product with ID {idProduct} not found.");
         }
         
-        // 2. ELIMINAR: Lo marcamos para eliminacion.
         _context.Products.Remove(existingProduct);
         
-        // 3. GUARDAR: Guardamos los cambios. EF generara un comando DELETE.
         _context.SaveChanges();
-        
-        // Devolvemos el producto que fue eliminado, traducido a Dominio.
-        return _mapper.ToDomainProductEntity(existingProduct);
     }
 
     /// <summary>
@@ -161,7 +148,7 @@ public class Repository
         
         // 1. Busca en la base de datos y obtiene las entidades de infraestructura
         var foundInfraProduts = _context.Products
-            .Where(p => p.Name.ToLower().Contains(searchTerm))
+            .Where(p => p.NameProduct.ToLower().Contains(searchTerm))
             .ToList();
         
         // 2. Usa el mapper para traducir la lista y devolverla
@@ -192,8 +179,8 @@ public class Repository
     public List<DomainProductEntity> GetProductsWithLowStock(int stockThreshold)
     {
         var foundIndraProducts = _context.Products
-            .Where(p => p.Stock <= stockThreshold)
-            .OrderBy(p => p.Stock)
+            .Where(p => p.StockQuantity <= stockThreshold)
+            .OrderBy(p => p.StockQuantity)
             .ToList();
         return _mapper.ToDomainProductEntityList(foundIndraProducts);
     }
