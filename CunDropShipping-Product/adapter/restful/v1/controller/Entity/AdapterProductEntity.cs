@@ -1,3 +1,5 @@
+using CunDropShipping.domain.Entity;
+
 namespace CunDropShipping.adapter.restful.v1.controller.Entity;
 
 /// <summary>
@@ -12,6 +14,21 @@ public class AdapterProductEntity
     public int IdProduct { get; set; }
 
     /// <summary>
+    /// Identificador del vendedor (GUID).
+    /// </summary>
+    public Guid SellerId { get; set; }
+
+    /// <summary>
+    /// Identificador de la subcategoría.
+    /// </summary>
+    public int SubCategoryId { get; set; }
+
+    /// <summary>
+    /// Código SKU único del producto.
+    /// </summary>
+    public string Sku { get; set; }
+
+    /// <summary>
     /// Nombre del producto que se muestra al cliente de la API.
     /// </summary>
     public string NameProduct { get; set; }
@@ -22,12 +39,32 @@ public class AdapterProductEntity
     public string Description { get; set; }
 
     /// <summary>
-    /// Precio del producto.
+    /// Precio original del producto.
     /// </summary>
     public decimal Price { get; set; }
+
+    /// <summary>
+    /// Precio actual del producto.
+    /// </summary>
+    public decimal CurrentPrice { get; set; }
 
     /// <summary>
     /// Cantidad de unidades disponibles en stock.
     /// </summary>
     public int StockQuantity { get; set; }
+
+    /// <summary>
+    /// Estado del producto.
+    /// </summary>
+    public ProductStatus ProductStatus { get; set; } = ProductStatus.Draft;
+
+    /// <summary>
+    /// Fecha de creación.
+    /// </summary>
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+    /// <summary>
+    /// Fecha de actualización.
+    /// </summary>
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
 }

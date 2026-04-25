@@ -17,7 +17,7 @@ public class AppDbContext : Microsoft.EntityFrameworkCore.DbContext
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
-    
+
     /// <summary>
     /// Representa la tabla de productos en la base de datos.
     /// A través de esta propiedad se pueden realizar consultas y cambios sobre la tabla "Productos_Tomas".

@@ -105,10 +105,10 @@ public class Repository
         }
         
         // 2. MODIFICAR: Actualizamos las propiedades del producto que encontramos.
-        existingProduct.nameProduct = domainProduct.NameProduct;
+        existingProduct.NameProduct = domainProduct.NameProduct;
         existingProduct.Description = domainProduct.Description;
-        existingProduct.price = domainProduct.Price;
-        existingProduct.stockQuantity = domainProduct.StockQuantity;
+        existingProduct.Price = domainProduct.Price;
+        existingProduct.StockQuantity = domainProduct.StockQuantity;
         
         // 3. GUARDAR: Guardamos los cambios. Como EF esta "rastreando" a 'existingProduct',
         // sabe que debe generar un comando UPDATE, no un INSERT.
@@ -118,30 +118,18 @@ public class Repository
         return _mapper.ToDomainProductEntity(existingProduct);
     }
 
-    /// <summary>
-    /// Elimina un producto identificado por su id.
-    /// </summary>
-    /// <param name="idProduct"></param>
-    /// <returns>La entidad de dominio eliminada o null si no existe.</returns>
-    public DomainProductEntity DeleteProduct(int idProduct)
+    public void DeleteProduct(int idProduct)
     {
-        // 1. BUSCAR: Primero, encontramos el producto que ya existe en la base de datos.
         var existingProduct = _context.Products.Find(idProduct);
         
-        // Si no lo encontramos, no podemos eliminarlo. Devolvemos null.
         if (existingProduct == null)
         {
-            return null;
+            throw new KeyNotFoundException($"Product with ID {idProduct} not found.");
         }
         
-        // 2. ELIMINAR: Lo marcamos para eliminacion.
         _context.Products.Remove(existingProduct);
         
-        // 3. GUARDAR: Guardamos los cambios. EF generara un comando DELETE.
         _context.SaveChanges();
-        
-        // Devolvemos el producto que fue eliminado, traducido a Dominio.
-        return _mapper.ToDomainProductEntity(existingProduct);
     }
 
     /// <summary>
@@ -160,7 +148,7 @@ public class Repository
         
         // 1. Busca en la base de datos y obtiene las entidades de infraestructura
         var foundInfraProduts = _context.Products
-            .Where(p => p.nameProduct.ToLower().Contains(searchTerm))
+            .Where(p => p.NameProduct.ToLower().Contains(searchTerm))
             .ToList();
         
         // 2. Usa el mapper para traducir la lista y devolverla
@@ -176,8 +164,8 @@ public class Repository
     public List<DomainProductEntity> FilterProductsByPriceRange(decimal minPrice, decimal maxPrice)
     {
         var foundInfraProduts = _context.Products
-            .Where(p => p.price >= minPrice && p.price <= maxPrice)
-            .OrderBy(p => p.price)
+            .Where(p => p.Price >= minPrice && p.Price <= maxPrice)
+            .OrderBy(p => p.Price)
             .ToList();
 
         return _mapper.ToDomainProductEntityList(foundInfraProduts);
@@ -191,8 +179,8 @@ public class Repository
     public List<DomainProductEntity> GetProductsWithLowStock(int stockThreshold)
     {
         var foundIndraProducts = _context.Products
-            .Where(p => p.stockQuantity <= stockThreshold)
-            .OrderBy(p => p.stockQuantity)
+            .Where(p => p.StockQuantity <= stockThreshold)
+            .OrderBy(p => p.StockQuantity)
             .ToList();
         return _mapper.ToDomainProductEntityList(foundIndraProducts);
     }

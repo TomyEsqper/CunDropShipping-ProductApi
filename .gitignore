@@ -1,6 +1,8 @@
-# Build results
-bin/
-obj/
+# ------------------------------
+# Build outputs
+# ------------------------------
+[Bb]in/
+[Oo]bj/
 [Dd]ebug/
 [Rr]elease/
 x64/
@@ -8,95 +10,74 @@ x86/
 [Aa]rm/
 [Aa]rm64/
 bld/
-[Bb]in/
-[Oo]bj/
-[Ll]og/
-[Ll]ogs/
+artifacts/
 
-# Visual Studio / Rider
+# ------------------------------
+# IDE / Editor
+# ------------------------------
 .vs/
 .vscode/
 .idea/
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
-*.userprefs
-*.pidb
-*.booproj
-*.suo
-*.user
-*.swp
-*.swo
-*~
-.DS_Store
 riderModule.iml
 /_ReSharper.Caches/
 *.DotSettings.user
+*.suo
+*.user
+*.userosscache
+*.userprefs
+*.sln.docstates
+*.swp
+*.swo
+*~
 
+# ------------------------------
 # NuGet
+# ------------------------------
 packages/
 *.nupkg
 *.snupkg
-!.nuget/packages.config
 project.lock.json
 project.fragment.lock.json
-artifacts/
 
-# Entity Framework
-*.db
-*.db-shm
-*.db-wal
+# ------------------------------
+# Logs / temp
+# ------------------------------
+[Ll]og/
+[Ll]ogs/
+*.log
+*.tmp
+*.pidb
+*.svclog
 
-# Test Coverage
+# ------------------------------
+# Coverage
+# ------------------------------
 coverage/
 *.coverage
 *.coveragexml
 
-# Files built by Visual Studio
-*_i.c
-*_p.c
-*_h.h
-*.ilk
-*.meta
-*.obj
-*.iobj
-*.pch
-*.pdb
-*.ipdb
-*.pgc
-*.pgd
-*.rsp
-*.sbr
-*.tlb
-*.tli
-*.tlh
-*.tmp
-*.tmp_proj
-*_wpftmp.csproj
-*.log
-*.tlog
-*.vspscc
-*.vssscc
-.builds
-*.pidb
-*.svclog
-*.scc
+# ------------------------------
+# Database/local runtime files
+# ------------------------------
+*.db
+*.db-shm
+*.db-wal
 
-# ASP.NET Scaffolding
+# ------------------------------
+# ASP.NET scaffolding
+# ------------------------------
 ScaffoldingReadMe.txt
 
-# Migrations (opcional - descomenta si no quieres versionar migraciones)
-# Migrations/
-
-# User-specific files
+# ------------------------------
+# Local config / secrets
+# ------------------------------
 appsettings.Development.json
 appsettings.Local.json
-
-# Environment variables
 .env
 .env.local
 
-# OS generated files
+# ------------------------------
+# OS files
+# ------------------------------
 Thumbs.db
 .DS_Store

@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace CunDropShipping.adapter.restful.v1.controller
 {
     [ApiController]
-    // ¡SOLUCIÓN 1: Ruta en minúscula para coincidir con el Gateway!
     [Route("api/v1/products")] 
     public class ProductController : ControllerBase
     {   
