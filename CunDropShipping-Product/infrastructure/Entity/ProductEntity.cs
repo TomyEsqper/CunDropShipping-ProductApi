@@ -1,11 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using CunDropShipping.domain.Entity;
 
 namespace CunDropShipping.infrastructure.Entity;
 
-[Table("products")]
+[Table("Products")]
 /// <summary>
-/// Representa la entidad de infraestructura que mapea la tabla de base de datos "Productos_Tomas".
+/// Representa la entidad de infraestructura que mapea la tabla de base de datos "Products".
 /// Contiene las propiedades que corresponden a las columnas de la tabla.
 /// </summary>
 public class ProductEntity
@@ -14,29 +15,83 @@ public class ProductEntity
     /// Identificador primario de la entidad en la base de datos.
     /// </summary>
     [Key]
+    [Column("productId")]
     public int IdProduct { get; set; }
-    
+
     /// <summary>
-    /// Nombre del producto. Campo requerido y con longitud máxima de 100 caracteres.
+    /// Identificador del vendedor (GUID).
     /// </summary>
     [Required]
-    [StringLength(100)]
-    public string nameProduct { get; set; }
-    
+    [Column("sellerId")]
+    public Guid SellerId { get; set; }
+
     /// <summary>
-    /// Descripción opcional del producto. Longitud máxima de 500 caracteres.
+    /// Identificador de la subcategoría.
     /// </summary>
-    [StringLength(500)]
+    [Required]
+    [Column("subCategoryId")]
+    public int SubCategoryId { get; set; }
+
+    /// <summary>
+    /// Código SKU único del producto.
+    /// </summary>
+    [Required]
+    [StringLength(50)]
+    [Column("SKU")]
+    public string Sku { get; set; }
+
+    /// <summary>
+    /// Nombre del producto.
+    /// </summary>
+    [Required]
+    [StringLength(200)]
+    [Column("name")]
+    public string NameProduct { get; set; }
+
+    /// <summary>
+    /// Descripción del producto.
+    /// </summary>
+    [Required]
+    [Column("description")]
     public string Description { get; set; }
-    
-    /// <summary>
-    /// Precio del producto, mapeado en la base de datos como decimal(18,2).
-    /// </summary>
-    [Column(TypeName = "decimal(18,2)")]
-    public decimal price { get; set; }
 
     /// <summary>
     /// Cantidad disponible en stock.
     /// </summary>
-    public int stockQuantity { get; set; }
+    [Required]
+    [Column("stockQuantity")]
+    public int StockQuantity { get; set; }
+
+    /// <summary>
+    /// Precio original del producto.
+    /// </summary>
+    [Required]
+    [Column("price", TypeName = "decimal(10,2)")]
+    public decimal Price { get; set; }
+
+    /// <summary>
+    /// Precio actual del producto.
+    /// </summary>
+    [Required]
+    [Column("currentPrice", TypeName = "decimal(10,2)")]
+    public decimal CurrentPrice { get; set; }
+
+    /// <summary>
+    /// Estado del producto.
+    /// </summary>
+    [Required]
+    [Column("productStatus")]
+    public string ProductStatus { get; set; } = "DRAFT";
+
+    /// <summary>
+    /// Fecha de creación.
+    /// </summary>
+    [Column("createdAt")]
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+    /// <summary>
+    /// Fecha de actualización.
+    /// </summary>
+    [Column("updatedAt")]
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
 }

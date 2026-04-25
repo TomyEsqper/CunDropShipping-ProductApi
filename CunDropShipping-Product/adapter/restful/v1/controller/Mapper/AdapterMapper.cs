@@ -19,11 +19,18 @@ public class AdapterMapper : IAdapterMapper
         return new AdapterProductEntity
         {
             IdProduct = domainProduct.IdProduct,
+            SellerId = domainProduct.SellerId,
+            SubCategoryId = domainProduct.SubCategoryId,
+            Sku = domainProduct.Sku,
             NameProduct = domainProduct.NameProduct,
             Description = domainProduct.Description,
             Price = domainProduct.Price,
+            CurrentPrice = domainProduct.CurrentPrice,
             StockQuantity = domainProduct.StockQuantity,
-        };    
+            ProductStatus = domainProduct.ProductStatus,
+            CreatedAt = domainProduct.CreatedAt,
+            UpdatedAt = domainProduct.UpdatedAt
+        };
     }
 
         /// <summary>
@@ -46,11 +53,18 @@ public class AdapterMapper : IAdapterMapper
         return new DomainProductEntity
         {
             IdProduct = adapterProduct.IdProduct,
+            SellerId = adapterProduct.SellerId,
+            SubCategoryId = adapterProduct.SubCategoryId,
+            Sku = adapterProduct.Sku,
             NameProduct = adapterProduct.NameProduct,
             Description = adapterProduct.Description,
             Price = adapterProduct.Price,
+            CurrentPrice = adapterProduct.CurrentPrice,
             StockQuantity = adapterProduct.StockQuantity,
-        }; 
+            ProductStatus = adapterProduct.ProductStatus,
+            CreatedAt = adapterProduct.CreatedAt,
+            UpdatedAt = adapterProduct.UpdatedAt
+        };
     }
 
     /// <summary>

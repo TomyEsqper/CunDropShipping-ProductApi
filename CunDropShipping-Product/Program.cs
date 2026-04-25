@@ -1,5 +1,6 @@
 
 
+using System.Text.Json.Serialization;
 using CunDropShipping.adapter.restful.v1.controller.Mapper;
 using CunDropShipping.infrastructure.DbContext;
 using CunDropShipping.application.Service;
@@ -9,7 +10,12 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Esta línea obliga a C# a mostrar el texto del Enum en lugar de su número interno
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
