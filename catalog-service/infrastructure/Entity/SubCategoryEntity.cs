@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Catalog.infrastructure.Entity;
 
-[Table("SubCategories")]
+[Table("Subcategories")]
 public class SubCategoryEntity
 {
     [Key]
