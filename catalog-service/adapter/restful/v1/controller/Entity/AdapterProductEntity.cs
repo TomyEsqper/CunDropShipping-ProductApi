@@ -67,4 +67,9 @@ public class AdapterProductEntity
     /// Fecha de actualización.
     /// </summary>
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
+    /// <summary>
+    /// Subcategoría asociada al producto.
+    /// </summary>
+    public AdapterSubCategoryEntity? SubCategory { get; set; }
 }

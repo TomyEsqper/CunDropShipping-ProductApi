@@ -13,8 +13,6 @@ public class SubCategoryServiceImp : ISubCategoryService
         _subCategoryRepository = subCategoryRepository;
     }
     
-    
-    
     public List<DomainSubCategoryEntity> GetAllSubCategory()
     {
         return _subCategoryRepository.GetAllSubCategory();
