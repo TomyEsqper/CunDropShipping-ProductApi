@@ -93,4 +93,10 @@ public class ProductEntity
     /// </summary>
     [Column("updatedAt")]
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
+    /// <summary>
+    /// Subcategoría asociada al producto.
+    /// </summary>
+    [ForeignKey(nameof(SubCategoryId))]
+    public SubCategoryEntity? SubCategory { get; set; }
 }

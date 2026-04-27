@@ -14,8 +14,13 @@ public class ProductAdapterMapper : IProductAdapterMapper
     /// </summary>
     /// <param name="domainProduct">Entidad de dominio a convertir.</param>
     /// <returns>Instancia de <see cref="AdapterProductEntity"/> con los campos mapeados.</returns>
-    public AdapterProductEntity ToAdapterProduct(DomainProductEntity domainProduct)
+    public AdapterProductEntity? ToAdapterProduct(DomainProductEntity? domainProduct)
     {
+        if (domainProduct == null)
+        {
+            return null;
+        }
+
         return new AdapterProductEntity
         {
             IdProduct = domainProduct.IdProduct,
@@ -29,7 +34,15 @@ public class ProductAdapterMapper : IProductAdapterMapper
             StockQuantity = domainProduct.StockQuantity,
             ProductStatus = domainProduct.ProductStatus,
             CreatedAt = domainProduct.CreatedAt,
-            UpdatedAt = domainProduct.UpdatedAt
+            UpdatedAt = domainProduct.UpdatedAt,
+            SubCategory = domainProduct.SubCategory == null
+                ? null
+                : new AdapterSubCategoryEntity
+                {
+                    SubCategoryId = domainProduct.SubCategory.SubCategoryId,
+                    NameSubCategory = domainProduct.SubCategory.NameSubCategory,
+                    CategoryId = domainProduct.SubCategory.CategoryId
+                }
         };
     }
 
@@ -40,7 +53,9 @@ public class ProductAdapterMapper : IProductAdapterMapper
     /// <returns>Lista de <see cref="AdapterProductEntity"/> resultante.</returns>
     public List<AdapterProductEntity> ToAdapterProductList(List<DomainProductEntity> domainProducts)
     {
-        return domainProducts.Count == 0 ? new List<AdapterProductEntity>() : domainProducts.Select(ToAdapterProduct).ToList();
+        return domainProducts.Count == 0
+            ? new List<AdapterProductEntity>()
+            : domainProducts.Select(domainProduct => ToAdapterProduct(domainProduct)!).ToList();
     }
 
     /// <summary>
@@ -48,8 +63,13 @@ public class ProductAdapterMapper : IProductAdapterMapper
     /// </summary>
     /// <param name="adapterProduct">Entidad del adaptador a convertir.</param>
     /// <returns>Instancia de <see cref="DomainProductEntity"/> con los campos mapeados.</returns>
-    public DomainProductEntity ToDomainProduct(AdapterProductEntity adapterProduct)
+    public DomainProductEntity? ToDomainProduct(AdapterProductEntity? adapterProduct)
     {
+        if (adapterProduct == null)
+        {
+            return null;
+        }
+
         return new DomainProductEntity
         {
             IdProduct = adapterProduct.IdProduct,
@@ -63,7 +83,15 @@ public class ProductAdapterMapper : IProductAdapterMapper
             StockQuantity = adapterProduct.StockQuantity,
             ProductStatus = adapterProduct.ProductStatus,
             CreatedAt = adapterProduct.CreatedAt,
-            UpdatedAt = adapterProduct.UpdatedAt
+            UpdatedAt = adapterProduct.UpdatedAt,
+            SubCategory = adapterProduct.SubCategory == null
+                ? null
+                : new DomainSubCategoryEntity
+                {
+                    SubCategoryId = adapterProduct.SubCategory.SubCategoryId,
+                    NameSubCategory = adapterProduct.SubCategory.NameSubCategory,
+                    CategoryId = adapterProduct.SubCategory.CategoryId
+                }
         };
     }
 
@@ -74,6 +102,8 @@ public class ProductAdapterMapper : IProductAdapterMapper
     /// <returns>Lista de <see cref="DomainProductEntity"/> resultante.</returns>
     public List<DomainProductEntity> ToDomainProducts(List<AdapterProductEntity> adapterProducts)
     {
-        return  adapterProducts.Count == 0 ? new List<DomainProductEntity>() : adapterProducts.Select(ToDomainProduct).ToList();   
+        return adapterProducts.Count == 0
+            ? new List<DomainProductEntity>()
+            : adapterProducts.Select(adapterProduct => ToDomainProduct(adapterProduct)!).ToList();
     }
 }

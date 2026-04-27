@@ -65,6 +65,11 @@ public class DomainProductEntity
     /// Fecha de actualización.
     /// </summary>
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
+    /// <summary>
+    /// Subcategoría asociada al producto.
+    /// </summary>
+    public DomainSubCategoryEntity? SubCategory { get; set; }
 }
 
 /// <summary>

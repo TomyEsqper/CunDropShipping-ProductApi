@@ -13,7 +13,7 @@ public interface IProductAdapterMapper
     /// </summary>
     /// <param name="domainProduct">Entidad de dominio a convertir.</param>
     /// <returns>Instancia de <see cref="AdapterProductEntity"/> lista para exponer en la API.</returns>
-    AdapterProductEntity ToAdapterProduct(DomainProductEntity domainProduct);
+    AdapterProductEntity? ToAdapterProduct(DomainProductEntity? domainProduct);
 
     /// <summary>
     /// Convierte una lista de entidades de dominio a una lista para la API.
@@ -27,7 +27,7 @@ public interface IProductAdapterMapper
     /// </summary>
     /// <param name="adapterProduct">Entidad del adaptador a convertir.</param>
     /// <returns>Instancia de <see cref="DomainProductEntity"/> correspondiente.</returns>
-    DomainProductEntity ToDomainProduct(AdapterProductEntity adapterProduct);
+    DomainProductEntity? ToDomainProduct(AdapterProductEntity? adapterProduct);
 
     /// <summary>
     /// Convierte una lista de entidades del adaptador a una lista de entidades de dominio.

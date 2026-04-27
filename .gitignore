@@ -77,6 +77,20 @@ appsettings.Local.json
 .env.local
 
 # ------------------------------
+# Local AI / agent tooling
+# ------------------------------
+.agents/
+.claude/
+.junie/
+.trae/
+skills-lock.json
+
+# ------------------------------
+# Local planning docs
+# ------------------------------
+docs/superpowers/
+
+# ------------------------------
 # OS files
 # ------------------------------
 Thumbs.db
