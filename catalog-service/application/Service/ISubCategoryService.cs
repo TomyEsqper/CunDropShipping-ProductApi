@@ -4,13 +4,13 @@ namespace Catalog.application.Service;
 
 public interface ISubCategoryService
 {
-    List<DomainSubCategoryEntity> GetAllSubCategory();
+    Task<List<DomainSubCategoryEntity>> GetAllSubCategoryAsync();
     
-    DomainSubCategoryEntity GetSubCategoryById(int id);
+    Task<DomainSubCategoryEntity?> GetSubCategoryByIdAsync(int id);
 
-    DomainSubCategoryEntity SaveSubCategory(DomainSubCategoryEntity subCategory);
+    Task<DomainSubCategoryEntity> SaveSubCategoryAsync(DomainSubCategoryEntity subCategory);
     
-    DomainSubCategoryEntity UpdateSubCategory(int id, DomainSubCategoryEntity subCategory);
+    Task<DomainSubCategoryEntity?> UpdateSubCategoryAsync(int id, DomainSubCategoryEntity subCategory);
     
-    DomainSubCategoryEntity DeleteSubCategory(int id);
+    Task<DomainSubCategoryEntity?> DeleteSubCategoryAsync(int id);
 }
