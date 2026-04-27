@@ -48,6 +48,6 @@ public class ProductServiceImp : IProductService
     public async Task<List<DomainProductEntity>> FilterProductsByPriceRangeAsync(decimal min, decimal max) => await _productRepository.FilterProductsByPriceRangeAsync(min, max);
     public async Task<List<DomainProductEntity>> GetProductsWithLowStockAsync(int t) => await _productRepository.GetProductsWithLowStockAsync(t);
 
-    private async Task<DomainSubCategoryEntity> GetSubCategoryAsync(int subCategoryId) =>
-        await Task.FromResult(_subCategoryService.GetSubCategoryById(subCategoryId));
+    private async Task<DomainSubCategoryEntity?> GetSubCategoryAsync(int subCategoryId) =>
+        await _subCategoryService.GetSubCategoryByIdAsync(subCategoryId);
 }

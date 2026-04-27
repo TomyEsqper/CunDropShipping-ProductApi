@@ -13,28 +13,28 @@ public class SubCategoryServiceImp : ISubCategoryService
         _subCategoryRepository = subCategoryRepository;
     }
     
-    public List<DomainSubCategoryEntity> GetAllSubCategory()
+    public async Task<List<DomainSubCategoryEntity>> GetAllSubCategoryAsync()
     {
-        return _subCategoryRepository.GetAllSubCategory();
+        return await _subCategoryRepository.GetAllSubCategoryAsync();
     }
 
-    public DomainSubCategoryEntity GetSubCategoryById(int id)
+    public async Task<DomainSubCategoryEntity?> GetSubCategoryByIdAsync(int id)
     {
-        return _subCategoryRepository.GetSubCategoryById(id);
+        return await _subCategoryRepository.GetSubCategoryByIdAsync(id);
     }
 
-    public DomainSubCategoryEntity SaveSubCategory(DomainSubCategoryEntity subCategory)
+    public async Task<DomainSubCategoryEntity> SaveSubCategoryAsync(DomainSubCategoryEntity subCategory)
     {
-        return _subCategoryRepository.SaveSubCategory(subCategory);
+        return await _subCategoryRepository.SaveSubCategoryAsync(subCategory);
     }
 
-    public DomainSubCategoryEntity UpdateSubCategory(int id, DomainSubCategoryEntity subCategory)
+    public async Task<DomainSubCategoryEntity?> UpdateSubCategoryAsync(int id, DomainSubCategoryEntity subCategory)
     {
-        return _subCategoryRepository.UpdateSubCategory(id, subCategory);
+        return await _subCategoryRepository.UpdateSubCategoryAsync(id, subCategory);
     }
 
-    public DomainSubCategoryEntity DeleteSubCategory(int id)
+    public async Task<DomainSubCategoryEntity?> DeleteSubCategoryAsync(int id)
     {
-        return _subCategoryRepository.DeleteSubCategory(id);
+        return await _subCategoryRepository.DeleteSubCategoryAsync(id);
     }
 }
