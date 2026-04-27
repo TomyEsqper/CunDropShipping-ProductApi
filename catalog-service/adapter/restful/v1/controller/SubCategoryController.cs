@@ -20,36 +20,37 @@ public class SubCategoryController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<List<AdapterSubCategoryEntity>> GetAllSubCategory()
+    public async Task<ActionResult<List<AdapterSubCategoryEntity>>> GetAllSubCategory()
     {
-        return Ok(_subCategoryAdapterMapper.ToAdapterSubCategoryList(_subCategoryService.GetAllSubCategory()));
+        var subCategories = await _subCategoryService.GetAllSubCategoryAsync();
+        return Ok(_subCategoryAdapterMapper.ToAdapterSubCategoryList(subCategories));
     }
 
     [HttpGet("{id}")]
-    public ActionResult<AdapterSubCategoryEntity> GetSubCategoryById(int id)
+    public async Task<ActionResult<AdapterSubCategoryEntity>> GetSubCategoryById(int id)
     {
-        var existingSubCtegory = _subCategoryService.GetSubCategoryById(id);
+        var existingSubCtegory = await _subCategoryService.GetSubCategoryByIdAsync(id);
         if (existingSubCtegory == null) return NotFound();
         
         return Ok(_subCategoryAdapterMapper.ToAdapterSubCategory(existingSubCtegory));
     }
     
     [HttpPost]
-    public ActionResult<AdapterSubCategoryEntity> SaveSubCategory([FromBody] AdapterSubCategoryEntity subCategory)
+    public async Task<ActionResult<AdapterSubCategoryEntity>> SaveSubCategory([FromBody] AdapterSubCategoryEntity subCategory)
     {
         var domainSubCategory = _subCategoryAdapterMapper.ToDomainSubCategory(subCategory);
-        var createdSubCategory = _subCategoryService.SaveSubCategory(domainSubCategory);
+        var createdSubCategory = await _subCategoryService.SaveSubCategoryAsync(domainSubCategory);
         var adapterResult = _subCategoryAdapterMapper.ToAdapterSubCategory(createdSubCategory);
         
         return CreatedAtAction(nameof(GetSubCategoryById), new { id = adapterResult.SubCategoryId }, adapterResult);
     }
 
     [HttpPut("{id}")]
-    public ActionResult<AdapterSubCategoryEntity> UpdateSubCategory(int id,
+    public async Task<ActionResult<AdapterSubCategoryEntity>> UpdateSubCategory(int id,
         [FromBody] AdapterSubCategoryEntity subCategory)
     {
         var domainSubCategory = _subCategoryAdapterMapper.ToDomainSubCategory(subCategory);
-        var updatedSubCategory = _subCategoryService.UpdateSubCategory(id, domainSubCategory);
+        var updatedSubCategory = await _subCategoryService.UpdateSubCategoryAsync(id, domainSubCategory);
         
         if (updatedSubCategory == null) return NotFound();
         
@@ -57,9 +58,9 @@ public class SubCategoryController : ControllerBase
     }
     
     [HttpDelete("{id}")]
-    public ActionResult DeleteSubCategory(int id)
+    public async Task<ActionResult> DeleteSubCategory(int id)
     {
-        var deletedSubCategory = _subCategoryService.DeleteSubCategory(id);
+        var deletedSubCategory = await _subCategoryService.DeleteSubCategoryAsync(id);
         
         if (deletedSubCategory == null) return NotFound();
         

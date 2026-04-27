@@ -16,67 +16,64 @@ public class SubCategoryRepository
         _mapper = mapper;
     }
 
-    public List<DomainSubCategoryEntity> GetAllSubCategory()
+    public async Task<List<DomainSubCategoryEntity>> GetAllSubCategoryAsync()
     {
-        var subCategories = _context.SubCategories
+        var subCategories = await _context.SubCategories
             .AsNoTracking()
             .OrderBy(p => p.NameSubCategory)
-            .ToList();
+            .ToListAsync();
         
         return _mapper.ToDomainSubCategoryEntityList(subCategories);
     }
 
-    public DomainSubCategoryEntity GetSubCategoryById(int id)
+    public async Task<DomainSubCategoryEntity?> GetSubCategoryByIdAsync(int id)
     {
-        var infraSubCategory = _context.SubCategories.Find(id);
+        var infraSubCategory = await _context.SubCategories
+            .FirstOrDefaultAsync(subCategory => subCategory.SubCategoryId == id);
 
         if (infraSubCategory == null)
         {
-            throw new KeyNotFoundException("SubCategory not found");
+            return null;
         }
         
         return _mapper.ToDomainSubCategoryEntity(infraSubCategory);
     }
 
-    public DomainSubCategoryEntity SaveSubCategory(DomainSubCategoryEntity domainSubCategory)
+    public async Task<DomainSubCategoryEntity> SaveSubCategoryAsync(DomainSubCategoryEntity domainSubCategory)
     {
         var infraSubCategory = _mapper.ToInfrastructureSubCategoryEntity(domainSubCategory);
 
-        _context.SubCategories.Add(infraSubCategory);
+        await _context.SubCategories.AddAsync(infraSubCategory);
         
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         
         return _mapper.ToDomainSubCategoryEntity(infraSubCategory);
         
     }
 
-    public DomainSubCategoryEntity UpdateSubCategory(int id, DomainSubCategoryEntity domainSubCategory)
+    public async Task<DomainSubCategoryEntity?> UpdateSubCategoryAsync(int id, DomainSubCategoryEntity domainSubCategory)
     {
-        var existingSubCategory = _mapper.ToInfrastructureSubCategoryEntity(domainSubCategory);
+        var existingSubCategory = await _context.SubCategories.FindAsync(id);
+        if (existingSubCategory == null) return null;
         
-        if (existingSubCategory == null) throw new KeyNotFoundException("SubCategory not found");
-        
-        existingSubCategory.SubCategoryId = domainSubCategory.SubCategoryId;
         existingSubCategory.NameSubCategory = domainSubCategory.NameSubCategory;
         existingSubCategory.CategoryId = domainSubCategory.CategoryId;
         
-        _context.SubCategories.Update(existingSubCategory);
+        await _context.SaveChangesAsync();
         
-        _context.SaveChanges();
-        
-        return _mapper.ToDomainSubCategoryEntity(existingSubCategory);
+        domainSubCategory.SubCategoryId = existingSubCategory.SubCategoryId;
+        return domainSubCategory;
             
     }
 
-    public DomainSubCategoryEntity DeleteSubCategory(int id)
+    public async Task<DomainSubCategoryEntity?> DeleteSubCategoryAsync(int id)
     {
-        var existingSubCategory = _context.SubCategories.Find(id);
-        
-        if (existingSubCategory == null) throw new KeyNotFoundException("SubCategory not found");
+        var existingSubCategory = await _context.SubCategories.FindAsync(id);
+        if (existingSubCategory == null) return null;
         
         _context.SubCategories.Remove(existingSubCategory);
         
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         
         return _mapper.ToDomainSubCategoryEntity(existingSubCategory);
     }
