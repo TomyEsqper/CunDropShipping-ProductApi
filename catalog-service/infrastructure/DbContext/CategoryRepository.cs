@@ -1,5 +1,6 @@
 ﻿using Catalog.domain.Entity;
 using Catalog.infrastructure.Mapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace Catalog.infrastructure.DbContext;
 
@@ -16,26 +17,58 @@ public class CategoryRepository
 
     public async Task<List<DomainCategoryEntity>> GetAllCategoryAsync()
     {
-        return null;
+        var categories = await _context.Categories
+            .AsNoTracking()
+            .OrderBy(c => c.NameCategory)
+            .ToListAsync();
+
+        return _mapper.ToDomainCategoryEntityList(categories);
     }
     
     public async Task<DomainCategoryEntity?> GetCategoryByIdAsync(int id)
     {
-        return null;
+        var infraCategory = await _context.Categories
+            .FirstOrDefaultAsync(category => category.CategoryId == id);
+        
+        if (infraCategory == null) return null;
+        
+        return _mapper.ToDomainCategoryEntity(infraCategory);
     }
 
-    public async Task<DomainCategoryEntity> SaveCategoryAsync(DomainCategoryEntity category)
+    public async Task<DomainCategoryEntity> SaveCategoryAsync(DomainCategoryEntity domainCategory)
     {
-        return null;
+        var infraCategory = _mapper.ToInfrastructureCategoryEntity(domainCategory);
+        
+        await _context.Categories.AddAsync(infraCategory);
+        await _context.SaveChangesAsync();
+        
+        return _mapper.ToDomainCategoryEntity(infraCategory);
     }
 
-    public async Task<DomainCategoryEntity> UpdateCategoryAsync(int id, DomainCategoryEntity category)
+    public async Task<DomainCategoryEntity> UpdateCategoryAsync(int id, DomainCategoryEntity domainCategory)
     {
-        return null;
+        var existingCategory = await _context.Categories.FindAsync(id);
+        if (existingCategory == null) return null;
+        
+        existingCategory.NameCategory = domainCategory.NameCategory;
+        existingCategory.ProtectionDays = domainCategory.ProtectionDays;
+        existingCategory.CategoryStatus = domainCategory.CategoryStatus;
+        
+        await _context.SaveChangesAsync();
+        
+        domainCategory.CategoryId = existingCategory.CategoryId;
+        return domainCategory;
     }
 
     public async Task<DomainCategoryEntity> DeleteCategoryAsync(int id)
     {
-        return null;
+        var existingCategory = await _context.Categories.FindAsync(id);
+        if (existingCategory == null) return null;
+        
+        _context.Categories.Remove(existingCategory);
+        
+        await _context.SaveChangesAsync();
+        
+        return _mapper.ToDomainCategoryEntity(existingCategory);
     }
 }

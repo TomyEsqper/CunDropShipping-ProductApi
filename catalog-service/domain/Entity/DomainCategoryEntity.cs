@@ -6,7 +6,7 @@ public class DomainCategoryEntity
     
     public string NameCategory { get; set; }
     
-    public int protectionDays { get; set; }
+    public int ProtectionDays { get; set; }
     
-    public string DescriptionCategory { get; set; }
+    public string CategoryStatus { get; set; }
 }
