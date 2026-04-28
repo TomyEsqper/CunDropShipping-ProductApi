@@ -19,6 +19,6 @@ public class CategoryEntity
     [Column("protectionDays")]
     public int ProtectionDays { get; set; }
     
-    [Column("categoryStatys")]
+    [Column("categoryStatus")]
     public string CategoryStatus { get; set; } = "ACTIVE";
 }

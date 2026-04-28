@@ -3,7 +3,7 @@ using Catalog.infrastructure.Entity;
 
 namespace Catalog.infrastructure.Mapper;
 
-public class CategoryInfrastructureMapper : ICategoryInfrastructureMapper
+public class CategoryInfrastructureMapperImpl : ICategoryInfrastructureMapper
 {
     public CategoryEntity ToInfrastructureCategoryEntity(DomainCategoryEntity domainCategory)
     {
