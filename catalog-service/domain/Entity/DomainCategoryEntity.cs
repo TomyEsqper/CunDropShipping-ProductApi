@@ -1,4 +1,4 @@
-﻿namespace Catalog.domain.Entity;
+namespace Catalog.domain.Entity;
 
 public class DomainCategoryEntity
 {
@@ -8,5 +8,12 @@ public class DomainCategoryEntity
     
     public int ProtectionDays { get; set; }
     
-    public string CategoryStatus { get; set; }
+    public CategoryStatus CategoryStatus { get; set; } = CategoryStatus.Active;
+}
+
+public enum CategoryStatus
+{
+    Active,
+    Inactive,
+    Deleted
 }

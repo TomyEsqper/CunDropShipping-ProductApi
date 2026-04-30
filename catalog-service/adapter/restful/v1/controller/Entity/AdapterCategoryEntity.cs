@@ -1,4 +1,6 @@
-﻿namespace Catalog.adapter.restful.v1.controller.Entity;
+using Catalog.domain.Entity;
+
+namespace Catalog.adapter.restful.v1.controller.Entity;
 
 public class AdapterCategoryEntity
 {
@@ -8,6 +10,5 @@ public class AdapterCategoryEntity
     
     public int ProtectionDays { get; set; }
     
-    public string CategoryStatus { get; set; }
-
+    public CategoryStatus CategoryStatus { get; set; } = CategoryStatus.Active;
 }
