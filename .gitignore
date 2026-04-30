@@ -81,6 +81,7 @@ appsettings.Local.json
 # ------------------------------
 .agents/
 .claude/
+.cursor/
 .junie/
 .trae/
 skills-lock.json
@@ -95,3 +96,8 @@ docs/superpowers/
 # ------------------------------
 Thumbs.db
 .DS_Store
+
+# ------------------------------
+# Nested IDE metadata
+# ------------------------------
+**/.idea/
