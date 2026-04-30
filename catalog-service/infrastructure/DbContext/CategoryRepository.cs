@@ -52,7 +52,7 @@ public class CategoryRepository
         
         existingCategory.NameCategory = domainCategory.NameCategory;
         existingCategory.ProtectionDays = domainCategory.ProtectionDays;
-        existingCategory.CategoryStatus = domainCategory.CategoryStatus;
+        existingCategory.CategoryStatus = CategoryInfrastructureMapperImpl.StatusToDb(domainCategory.CategoryStatus);
         
         await _context.SaveChangesAsync();
         
