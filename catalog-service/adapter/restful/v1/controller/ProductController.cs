@@ -19,92 +19,96 @@ namespace CunDropShipping.adapter.restful.v1.controller
         }
         
         [HttpGet]
-        public ActionResult<List<AdapterProductEntity>> GetAllProducts()
+        public async Task<ActionResult<List<AdapterProductEntity>>> GetAllProducts()
         {
-            return Ok(_productAdapterMapper.ToAdapterProductList(_productService.GetAllProducts()));
+            var products = await _productService.GetAllProductsAsync();
+            return Ok(_productAdapterMapper.ToAdapterProductList(products));
         }
 
         [HttpGet("{id}")]
-        public ActionResult<AdapterProductEntity> GetProductById(int id)
+        public async Task<ActionResult<AdapterProductEntity>> GetProductById(int id)
         {
-            var product = _productService.GetProductById(id);
+            var product = await _productService.GetProductByIdAsync(id);
             if (product == null)
             {
-                return NotFound();
+                return NotFound(new { message = $"Product with ID {id} not found" });
             }
             return Ok(_productAdapterMapper.ToAdapterProduct(product));
         }
 
         [HttpPost]
-        public ActionResult<AdapterProductEntity> CreateProduct([FromBody] AdapterProductEntity product)
+        public async Task<ActionResult<AdapterProductEntity>> CreateProduct([FromBody] AdapterProductEntity productDto)
         {
-            var domainProduct = _productAdapterMapper.ToDomainProduct(product);
-            var createdProduct = _productService.SaveProduct(domainProduct);
-            var adapterResult = _productAdapterMapper.ToAdapterProduct(createdProduct);
+            var domainProduct = _productAdapterMapper.ToDomainProduct(productDto);
+            if (domainProduct == null)
+            {
+                return BadRequest(new { message = "Product payload is required" });
+            }
+
+            var savedProduct = await _productService.SaveProductAsync(domainProduct);
+            
+            var adapterResult = _productAdapterMapper.ToAdapterProduct(savedProduct);
+            if (adapterResult == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Product mapping failed" });
+            }
+
             return CreatedAtAction(nameof(GetProductById), new { id = adapterResult.IdProduct }, adapterResult);
         }
 
         [HttpPut("{id}")]
-        public ActionResult<AdapterProductEntity> UpdateProduct(int id, [FromBody] AdapterProductEntity product)
+        public async Task<ActionResult<AdapterProductEntity>> UpdateProduct(int id, [FromBody] AdapterProductEntity productDto)
         {
-            var domainProduct = _productAdapterMapper.ToDomainProduct(product);
-            var updatedProduct = _productService.UpdateProduct(id, domainProduct);
+            var domainProduct = _productAdapterMapper.ToDomainProduct(productDto);
+            if (domainProduct == null)
+            {
+                return BadRequest(new { message = "Product payload is required" });
+            }
+
+            var updatedProduct = await _productService.UpdateProductAsync(id, domainProduct);
             
             if (updatedProduct == null)
             {
-                return NotFound();
+                return NotFound(new { message = $"Product with ID {id} not found" });
             }
             
-            var adapterResult = _productAdapterMapper.ToAdapterProduct(updatedProduct);
-            return Ok(adapterResult);
+            return Ok(_productAdapterMapper.ToAdapterProduct(updatedProduct));
         }
 
-        /// <summary>
-        /// Elimina un producto identificado por su id.
-        /// </summary>
-        // ¡SOLUCIÓN 2: Método DELETE limpio y corregido!
         [HttpDelete("{id}")]
-        public ActionResult<AdapterProductEntity> DeleteProduct(int id)
+        public async Task<ActionResult<AdapterProductEntity>> DeleteProduct(int id)
         {
-            // 1. Llama al servicio para borrar el producto
-            var deletedProduct = _productService.DeleteProduct(id);
+            var deletedProduct = await _productService.DeleteProductAsync(id);
             
-            // 2. Si devuelve null, es porque no lo encontró
             if (deletedProduct == null)
             {
-                return NotFound(); // Devuelve 404 si no existe
+                return NotFound(new { message = $"Product with ID {id} not found" });
             }
             
-            // 3. (Como tu Gateway espera) Traduce el producto borrado y lo devuelve
-            var adapterResult = _productAdapterMapper.ToAdapterProduct(deletedProduct);
-            return Ok(adapterResult);
+            return Ok(_productAdapterMapper.ToAdapterProduct(deletedProduct));
         }
         
         // --- ENDPOINTS FILTRADO AVANZADO ---
         
         [HttpGet("search")]
-        public ActionResult<List<AdapterProductEntity>> SearchByName([FromQuery] string searchTerm)
+        public async Task<ActionResult<List<AdapterProductEntity>>> SearchByName([FromQuery] string searchTerm)
         {
-            var domainProducts = _productService.SearchProductsByName(searchTerm);
-            var adapterProducts = _productAdapterMapper.ToAdapterProductList(domainProducts);
-            return Ok(adapterProducts); 
+            var domainProducts = await _productService.SearchProductsByNameAsync(searchTerm);
+            return Ok(_productAdapterMapper.ToAdapterProductList(domainProducts)); 
         }
 
         [HttpGet("filter/price")]
-        public ActionResult<List<AdapterProductEntity>> FilterProductByPriceRange([FromQuery] decimal minPrice,
-            [FromQuery] decimal maxPrice)
+        public async Task<ActionResult<List<AdapterProductEntity>>> FilterProductByPriceRange([FromQuery] decimal minPrice, [FromQuery] decimal maxPrice)
         {
-            var domainProducts = _productService.FilterProductsByPriceRange(minPrice, maxPrice);
-            var adapterProducts = _productAdapterMapper.ToAdapterProductList(domainProducts);
-            return Ok(adapterProducts);
+            var domainProducts = await _productService.FilterProductsByPriceRangeAsync(minPrice, maxPrice);
+            return Ok(_productAdapterMapper.ToAdapterProductList(domainProducts));
         }
         
         [HttpGet("filter/stock")]
-        public ActionResult<List<AdapterProductEntity>> GetProductsWithLowStock([FromQuery] int stockThreshold)
+        public async Task<ActionResult<List<AdapterProductEntity>>> GetProductsWithLowStock([FromQuery] int stockThreshold)
         {
-            var domainProducts = _productService.GetProductsWithLowStock(stockThreshold);
-            var adapterProducts = _productAdapterMapper.ToAdapterProductList(domainProducts);
-            return Ok(adapterProducts);
+            var domainProducts = await _productService.GetProductsWithLowStockAsync(stockThreshold);
+            return Ok(_productAdapterMapper.ToAdapterProductList(domainProducts));
         }
     }
 }

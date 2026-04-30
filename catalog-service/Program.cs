@@ -31,6 +31,16 @@ builder.Services.AddScoped<IProductInfrastructureMapper, ProductInfrastructureMa
 builder.Services.AddScoped<IProductAdapterMapper, ProductAdapterMapper>();
 builder.Services.AddScoped<IProductService, ProductServiceImp>();
 
+builder.Services.AddScoped<SubCategoryRepository>();
+builder.Services.AddScoped<ISubCategoryInfrastructureMapper, SubCategoryInfrastructureMapperImpl>();
+builder.Services.AddScoped<ISubCategoryAdapterMapper, SubCategoryAdapterMapper>();
+builder.Services.AddScoped<ISubCategoryService, SubCategoryServiceImp>();
+
+builder.Services.AddScoped<CategoryRepository>();
+builder.Services.AddScoped<ICategoryInfrastructureMapper, CategoryInfrastructureMapperImpl>();
+builder.Services.AddScoped<ICategoryAdapterMapper, CategoryAdapterMapper>();
+builder.Services.AddScoped<ICategoryService, CategoryServiceImp>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -24,6 +24,11 @@ public class AdapterProductEntity
     public int SubCategoryId { get; set; }
 
     /// <summary>
+    /// Subcategoría asociada al producto.
+    /// </summary>
+    public AdapterSubCategoryEntity? SubCategory { get; set; }
+
+    /// <summary>
     /// Código SKU único del producto.
     /// </summary>
     public string Sku { get; set; }
@@ -67,4 +72,5 @@ public class AdapterProductEntity
     /// Fecha de actualización.
     /// </summary>
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
 }

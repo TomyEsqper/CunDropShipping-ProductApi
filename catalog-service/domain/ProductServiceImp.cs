@@ -1,71 +1,53 @@
 using Catalog.application.Service;
 using Catalog.domain.Entity;
 using Catalog.infrastructure.DbContext;
-using Catalog.infrastructure.Mapper;
 
 namespace Catalog.domain;
 
-
 public class ProductServiceImp : IProductService
 {
-
     private readonly ProductRepository _productRepository;
+    private readonly ISubCategoryService _subCategoryService;
 
-
-    public ProductServiceImp(ProductRepository productRepository)
+    public ProductServiceImp(ProductRepository productRepository, ISubCategoryService subCategoryService)
     {
         _productRepository = productRepository;
+        _subCategoryService = subCategoryService;
     }
 
+    public async Task<List<DomainProductEntity>> GetAllProductsAsync() => await _productRepository.GetAllProductsAsync();
 
-    public List<DomainProductEntity> GetAllProducts()
+    public async Task<DomainProductEntity?> GetProductByIdAsync(int id) => await _productRepository.GetProductByIdAsync(id);
+
+    public async Task<DomainProductEntity> SaveProductAsync(DomainProductEntity product)
     {
-        return _productRepository.GetAllProducts();
+        var subCat = await GetSubCategoryAsync(product.SubCategoryId);
+        if (subCat == null) throw new KeyNotFoundException("SubCategory not found");
+        product.SubCategory = subCat;
+
+        return await _productRepository.SaveProductAsync(product);
     }
 
-
-    public DomainProductEntity GetProductById(int id)
+    public async Task<DomainProductEntity?> UpdateProductAsync(int id, DomainProductEntity product)
     {
-        return _productRepository.GetProductById(id);
+        var subCat = await GetSubCategoryAsync(product.SubCategoryId);
+        if (subCat == null) throw new KeyNotFoundException("SubCategory not found");
+
+        product.SubCategory = subCat;
+        return await _productRepository.UpdateProductAsync(id, product);
     }
 
-
-    public DomainProductEntity SaveProduct(DomainProductEntity product)
+    public async Task<DomainProductEntity?> DeleteProductAsync(int id)
     {
-        return _productRepository.SaveProduct(product);
+        var p = await _productRepository.GetProductByIdAsync(id);
+        if (p != null) await _productRepository.DeleteProductAsync(id);
+        return p;
     }
 
-    
-    public DomainProductEntity UpdateProduct(int id, DomainProductEntity product)
-    {
-        return _productRepository.UpdateProduct(id, product);
-    }
+    public async Task<List<DomainProductEntity>> SearchProductsByNameAsync(string term) => await _productRepository.SearchProductsByNameAsync(term);
+    public async Task<List<DomainProductEntity>> FilterProductsByPriceRangeAsync(decimal min, decimal max) => await _productRepository.FilterProductsByPriceRangeAsync(min, max);
+    public async Task<List<DomainProductEntity>> GetProductsWithLowStockAsync(int t) => await _productRepository.GetProductsWithLowStockAsync(t);
 
-
-    public DomainProductEntity DeleteProduct(int idProduct)
-    {
-        var product = _productRepository.GetProductById(idProduct);
-        
-        _productRepository.DeleteProduct(idProduct);
-
-        return product;
-    }
-
-
-    public List<DomainProductEntity> SearchProductsByName(string searchTerm)
-    {
-        return _productRepository.SearchProductsByName(searchTerm);
-    }
-
-
-    public List<DomainProductEntity> FilterProductsByPriceRange(decimal minPrice, decimal maxPrice)
-    {
-        return _productRepository.FilterProductsByPriceRange(minPrice, maxPrice);
-    }
-
-
-    public List<DomainProductEntity> GetProductsWithLowStock(int stockThreshold)
-    {
-        return _productRepository.GetProductsWithLowStock(stockThreshold);
-    }
+    private async Task<DomainSubCategoryEntity?> GetSubCategoryAsync(int subCategoryId) =>
+        await _subCategoryService.GetSubCategoryByIdAsync(subCategoryId);
 }

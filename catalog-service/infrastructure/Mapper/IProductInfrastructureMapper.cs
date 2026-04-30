@@ -28,7 +28,7 @@ public interface IProductInfrastructureMapper
     /// </summary>
     /// <param name="domainProduct">Entidad de infraestructura obtenida de la base de datos.</param>
     /// <returns>Instancia de <see cref="DomainProductEntity"/> correspondiente.</returns>
-    DomainProductEntity ToDomainProductEntity(ProductEntity domainProduct);
+    DomainProductEntity? ToDomainProductEntity(ProductEntity? domainProduct);
 
     /// <summary>
     /// Convierte una lista de entidades de infraestructura a su representación de dominio.

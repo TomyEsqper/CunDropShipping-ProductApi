@@ -75,8 +75,13 @@ public class ProductInfrastructureMapperImpl : IProductInfrastructureMapper
     /// </summary>
     /// <param name="domainProduct">Entidad de infraestructura a convertir.</param>
     /// <returns>Instancia de <see cref="DomainProductEntity"/> con los campos mapeados.</returns>
-    public DomainProductEntity ToDomainProductEntity(ProductEntity domainProduct)
+    public DomainProductEntity? ToDomainProductEntity(ProductEntity? domainProduct)
     {
+        if (domainProduct == null)
+        {
+            return null;
+        }
+
         return new DomainProductEntity
         {
             IdProduct = domainProduct.IdProduct,
@@ -90,7 +95,15 @@ public class ProductInfrastructureMapperImpl : IProductInfrastructureMapper
             StockQuantity = domainProduct.StockQuantity,
             ProductStatus = DbToStatus(domainProduct.ProductStatus),
             CreatedAt = domainProduct.CreatedAt,
-            UpdatedAt = domainProduct.UpdatedAt
+            UpdatedAt = domainProduct.UpdatedAt,
+            SubCategory = domainProduct.SubCategory == null
+                ? null
+                : new DomainSubCategoryEntity
+                {
+                    SubCategoryId = domainProduct.SubCategory.SubCategoryId,
+                    NameSubCategory = domainProduct.SubCategory.NameSubCategory,
+                    CategoryId = domainProduct.SubCategory.CategoryId
+                }
         };
     }
 
@@ -108,6 +121,6 @@ public class ProductInfrastructureMapperImpl : IProductInfrastructureMapper
             return new List<DomainProductEntity>();
         }
         // Convierte cada ProductEntity a DomainProductEntity y devolvemos la nueva lista.
-        return productEntities.Select(p => ToDomainProductEntity(p)).ToList();
+        return productEntities.Select(productEntity => ToDomainProductEntity(productEntity)!).ToList();
     }
 }

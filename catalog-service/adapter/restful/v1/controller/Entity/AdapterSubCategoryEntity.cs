@@ -2,7 +2,7 @@
 
 public class AdapterSubCategoryEntity
 {
-    public int IdSubCategory { get; set; }
+    public int SubCategoryId { get; set; }
     public string NameSubCategory { get; set; }
     public int CategoryId { get; set; }
 }
