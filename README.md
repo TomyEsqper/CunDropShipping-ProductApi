@@ -1,159 +1,96 @@
-🚀 CunDropShipping API
-======================
+# Catalog Service
 
-Introducción
-------------
-CunDropShipping API es un servicio backend construido en ASP.NET Core que implementa un catálogo de productos para una tienda de e-commerce. Este repositorio está diseñado como referencia práctica de buenas prácticas arquitectónicas (Clean Architecture), patrones de diseño y separación de responsabilidades.
+API backend construida con ASP.NET Core para gestionar un catalogo de productos y subcategorias.
 
-Resumen rápido del contenido del repositorio
-- Aplicación principal: `CunDropShipping/` (contiene `Program.cs`, `appsettings.json`, controladores, capas y migraciones).
-- Migraciones EF Core: `CunDropShipping/Migrations/`.
-- Controlador principal de la API: `adapter/restful/v1/controller/ProductController.cs`.
+## Resumen
 
-Arquitectura (4 capas)
-----------------------
-El proyecto sigue una Arquitectura Limpia de 4 capas:
-- domain: entidades y lógica de negocio (independiente de frameworks).
-- application: contratos (interfaces) y servicios de aplicación (por ejemplo `IProductService`).
-- infrastructure: persistencia con EF Core (`AppDbContext`, `Repository`) y mappers de infraestructura.
-- adapter: controladores REST y DTOs para entrada/salida (mappers entre DTOs y dominio).
+Este repositorio contiene un servicio organizado en cuatro capas:
 
-Puntos relevantes de la implementación actual
-- `Program.cs` registra `AppDbContext` usando MySQL (ServerVersion.AutoDetect) y registra via DI:
-  - `Repository` (scoped)
-  - `IInfrastructureMapper` → `InfrastructureMapperImpl`
-  - `IAdapterMapper` → `AdapterMapper`
-  - `IProductService` → `ProductServiceImp`
-- `appsettings.json` contiene la sección `ConnectionStrings:DefaultConnection`. Recomendación: no dejar credenciales en el control de versiones; usar variables de entorno en entornos públicos.
-- Las migraciones EF Core están incluidas en `Migrations/`.
+- `domain`: entidades de negocio y logica de servicios.
+- `application`: contratos de servicio.
+- `infrastructure`: persistencia con Entity Framework Core y mapeadores de infraestructura.
+- `adapter`: controladores REST, DTOs de la API y mapeadores del adaptador.
 
-Características principales
---------------------------
-- CRUD de productos.
-- Búsqueda por nombre, filtrado por rango de precio y consulta de productos con bajo stock.
-- Mappers separados para mantener fronteras entre capas.
+La API actual expone:
 
-Endpoints expuestos (controlador `ProductController`)
------------------------------------------------------
-Base: `/api/v1/Products`
+- CRUD de productos
+- busqueda de productos por nombre
+- filtros de productos por precio y stock
+- CRUD de subcategorias
 
-- GET /api/v1/Products
-  - Descripción: Devuelve todos los productos.
-  - Respuesta: 200 OK con lista de productos (formato `AdapterProductEntity`).
+## Estructura General
 
-- GET /api/v1/Products/{id}
-  - Descripción: Obtiene un producto por su id.
-  - Respuesta: 200 OK con el producto o 404 Not Found si no existe.
+- `catalog-service/`: proyecto principal de la aplicacion.
+- `catalog-service/domain/`: entidades del dominio e implementaciones de servicios.
+- `catalog-service/application/Service/`: interfaces de servicios de aplicacion.
+- `catalog-service/infrastructure/`: repositorios EF Core, entidades de persistencia y mapeadores.
+- `catalog-service/adapter/restful/v1/controller/`: controladores, modelos expuestos por la API y mapeadores.
+- `docs/`: documentacion detallada del proyecto.
 
-- POST /api/v1/Products
-  - Descripción: Crea un producto. Envía el cuerpo como JSON con el contrato público (`AdapterProductEntity`).
-  - Respuesta: 201 Created con Location apuntando a `GET /api/v1/Products/{id}`.
+Documentacion adicional:
 
-- PUT /api/v1/Products/{id}
-  - Descripción: Actualiza un producto existente (reemplazo parcial según implementación de mappers).
-  - Respuesta: 200 OK con el producto actualizado o 404 Not Found si no existe.
+- [Arquitectura](docs/architecture.md)
+- [Estructura del proyecto](docs/project-structure.md)
+- [Resumen de la API](docs/api-overview.md)
+- [Contribucion](docs/contributing.md)
 
-- DELETE /api/v1/Products/{id}
-  - Descripción: Elimina (según política implementada, puede tratarse como soft-delete) un producto.
-  - Cuerpo: espera un `AdapterProductEntity` en el body (según controlador).
-  - Respuesta: 200 OK con la entidad eliminada o 404 Not Found si no existe.
+## Requisitos
 
-- GET /api/v1/Products/search?searchTerm={texto}
-  - Descripción: Busca productos por nombre parcial o completo.
-  - Parámetros: `searchTerm` (string).
+- .NET SDK en la version definida en `global.json`
+- acceso a una base de datos compatible con MySQL
 
-- GET /api/v1/Products/filter/price?minPrice={min}&maxPrice={max}
-  - Descripción: Filtra productos por rango de precio.
-  - Parámetros: `minPrice` (decimal), `maxPrice` (decimal).
+## Ejecucion Local
 
-- GET /api/v1/Products/stock/low?stockThreshold={n}
-  - Descripción: Devuelve productos con stock menor o igual a `stockThreshold`.
-  - Parámetros: `stockThreshold` (int).
-
-Modelos públicos (contrato expuesto por la API)
-----------------------------------------------
-`AdapterProductEntity` (campos usados por la API):
-- Id (int)
-- Name (string)
-- Description (string)
-- Price (decimal)
-- Stock (int)
-
-Cómo ejecutar localmente (pasos verificados)
---------------------------------------------
-Checklist previo
-- .NET SDK (usa la versión en `global.json` si está presente).
-- MySQL o equivalente disponible.
-- (Opcional) `dotnet-ef` para ejecutar migraciones si no estás usando migraciones automatizadas.
-
-Pasos
-1) Clonar el repositorio:
+Restaurar dependencias:
 
 ```bash
-git clone https://github.com/TomyEsqper/CunDropShipping.git
-cd CunDropShipping
+dotnet restore catalog-service.sln
 ```
 
-2) Revisar la cadena de conexión en `CunDropShipping/appsettings.json` o sobrescribirla con una variable de entorno.
-- Ejemplo: exportar la cadena sin credenciales en el archivo:
+Compilar la solucion:
 
 ```bash
-export ConnectionStrings__DefaultConnection="Server=localhost;Port=3306;Database=cundropshipping;User=root;Password=TuPassword;"
+dotnet build catalog-service.sln
 ```
 
-3) Aplicar migraciones (desde la carpeta `CunDropShipping`):
+Ejecutar la API:
 
 ```bash
-cd CunDropShipping
-# Si no tienes dotnet-ef instalado globalmente:
-# dotnet tool install --global dotnet-ef
-dotnet ef database update
+dotnet run --project catalog-service/catalog-service.csproj
 ```
 
-4) Ejecutar la aplicación:
+Ejecutar con hot reload:
 
 ```bash
-# Desde la carpeta raíz del repositorio
-dotnet run --project CunDropShipping
+dotnet watch --project catalog-service/catalog-service.csproj run
 ```
 
-- Nota: `Program.cs` habilita Swagger sólo si el entorno es `Development`. Revisa la salida del comando para ver las URLs exactas (ej. `http://localhost:5000` y `https://localhost:5001`).
+Los perfiles locales de ejecucion estan definidos en `catalog-service/Properties/launchSettings.json`.
 
-Ejemplos de uso prácticos
-------------------------
-- Listar productos:
+## Configuracion
+
+El servicio lee la conexion a base de datos desde `ConnectionStrings:DefaultConnection`.
+
+Para desarrollo local, es mejor sobrescribirla con una variable de entorno en lugar de editar configuracion versionada:
 
 ```bash
-curl -s "http://localhost:5000/api/v1/Products" | jq '.'
+ConnectionStrings__DefaultConnection=Server=localhost;Port=3306;Database=catalog;User=app;Password=your-password;SslMode=None;
 ```
 
-- Buscar por nombre:
+Revisa [`catalog-service/appsettings.json`](catalog-service/appsettings.json) con cuidado antes de confirmar cambios de configuracion.
 
-```bash
-curl -s "http://localhost:5000/api/v1/Products/search?searchTerm=camisa" | jq '.'
-```
+## Swagger
 
-- Filtrar por precio:
+Swagger solo se habilita en el entorno `Development`. Con los perfiles locales actuales, la aplicacion abre Swagger automaticamente.
 
-```bash
-curl -s "http://localhost:5000/api/v1/Products/filter/price?minPrice=10&maxPrice=100" | jq '.'
-```
+## Notas Actuales
 
-- Crear producto (JSON body):
+- La serializacion JSON devuelve los enums como texto.
+- `ProductServiceImp` valida que la subcategoria referenciada exista antes de crear o actualizar un producto.
+- Las consultas de productos incluyen la subcategoria relacionada en las lecturas del repositorio.
 
-```bash
-curl -X POST "http://localhost:5000/api/v1/Products" \
-  -H "Content-Type: application/json" \
-  -d '{
-        "name":"Camiseta ejemplo",
-        "description":"Demo",
-        "price":19.99,
-        "stock":50
-      }'
-```
+## Flujo de Trabajo
 
-Flujo de trabajo y colaboración
--------------------------------
-- Branching: Git Flow (main, develop, feature/*).
-- Commits: Conventional Commits (`feat`, `fix`, `docs`, etc.).
-- Pull Requests: incluir descripción, testing y revisar cambios en migraciones.
+- modelo de ramas: estilo Git Flow (`main`, `Develop`, `feature/*`, `docs/*`)
+- estilo de commits: Conventional Commits
+- los cambios de documentacion deberian ir separados de cambios funcionales cuando sea posible
