@@ -37,12 +37,7 @@ public class ProductServiceImp : IProductService
         return await _productRepository.UpdateProductAsync(id, product);
     }
 
-    public async Task<DomainProductEntity?> DeleteProductAsync(int id)
-    {
-        var p = await _productRepository.GetProductByIdAsync(id);
-        if (p != null) await _productRepository.DeleteProductAsync(id);
-        return p;
-    }
+    public async Task<DomainProductEntity?> DeleteProductAsync(int id) => await _productRepository.DeleteProductAsync(id);
 
     public async Task<List<DomainProductEntity>> SearchProductsByNameAsync(string term) => await _productRepository.SearchProductsByNameAsync(term);
     public async Task<List<DomainProductEntity>> FilterProductsByPriceRangeAsync(decimal min, decimal max) => await _productRepository.FilterProductsByPriceRangeAsync(min, max);
