@@ -24,4 +24,5 @@ public class AppDbContext : Microsoft.EntityFrameworkCore.DbContext
     /// </summary>
     public DbSet<ProductEntity> Products { get; set; }
     public DbSet<SubCategoryEntity> SubCategories { get; set; }
+    public DbSet<CategoryEntity> Categories { get; set; }
 }
