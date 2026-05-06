@@ -29,14 +29,17 @@ public class CategoryController : ControllerBase
     public async Task<ActionResult<AdapterCategoryEntity>> GetCategoryById(int id)
     {
         var existingCategory = await _categoryService.GetCategoryByIdAsync(id);
-        
-        if (existingCategory == null) return NotFound();
-        
+
+        if (existingCategory == null)
+        {
+            return NotFound(new { message = $"Category with ID {id} not found" });
+        }
+
         return Ok(_categoryAdapterMapper.ToAdapterCategory(existingCategory));
     }
 
     [HttpPost]
-    public async Task<ActionResult<AdapterProductEntity>> SaveCategory([FromBody] AdapterCategoryEntity category)
+    public async Task<ActionResult<AdapterCategoryEntity>> SaveCategory([FromBody] AdapterCategoryEntity category)
     {
         var domainCategory = _categoryAdapterMapper.ToDomainCategory(category);
         var createdCategory = await _categoryService.SaveCategoryAsync(domainCategory);
@@ -50,9 +53,12 @@ public class CategoryController : ControllerBase
     {
         var domainCategory = _categoryAdapterMapper.ToDomainCategory(category);
         var updatedCategory = await _categoryService.UpdateCategoryAsync(id, domainCategory);
-        
-        if (updatedCategory == null) return NotFound();
-        
+
+        if (updatedCategory == null)
+        {
+            return NotFound(new { message = $"Category with ID {id} not found" });
+        }
+
         return Ok(_categoryAdapterMapper.ToAdapterCategory(updatedCategory));
     }
     

@@ -45,15 +45,22 @@ namespace CunDropShipping.adapter.restful.v1.controller
                 return BadRequest(new { message = "Product payload is required" });
             }
 
-            var savedProduct = await _productService.SaveProductAsync(domainProduct);
-            
-            var adapterResult = _productAdapterMapper.ToAdapterProduct(savedProduct);
-            if (adapterResult == null)
+            try
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Product mapping failed" });
-            }
+                var savedProduct = await _productService.SaveProductAsync(domainProduct);
 
-            return CreatedAtAction(nameof(GetProductById), new { id = adapterResult.IdProduct }, adapterResult);
+                var adapterResult = _productAdapterMapper.ToAdapterProduct(savedProduct);
+                if (adapterResult == null)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Product mapping failed" });
+                }
+
+                return CreatedAtAction(nameof(GetProductById), new { id = adapterResult.IdProduct }, adapterResult);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
         }
 
         [HttpPut("{id}")]
@@ -65,14 +72,21 @@ namespace CunDropShipping.adapter.restful.v1.controller
                 return BadRequest(new { message = "Product payload is required" });
             }
 
-            var updatedProduct = await _productService.UpdateProductAsync(id, domainProduct);
-            
-            if (updatedProduct == null)
+            try
             {
-                return NotFound(new { message = $"Product with ID {id} not found" });
+                var updatedProduct = await _productService.UpdateProductAsync(id, domainProduct);
+
+                if (updatedProduct == null)
+                {
+                    return NotFound(new { message = $"Product with ID {id} not found" });
+                }
+
+                return Ok(_productAdapterMapper.ToAdapterProduct(updatedProduct));
             }
-            
-            return Ok(_productAdapterMapper.ToAdapterProduct(updatedProduct));
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
         }
 
         [HttpDelete("{id}")]
