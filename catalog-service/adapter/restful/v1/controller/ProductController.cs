@@ -107,6 +107,11 @@ namespace CunDropShipping.adapter.restful.v1.controller
         [HttpGet("search")]
         public async Task<ActionResult<List<AdapterProductEntity>>> SearchByName([FromQuery] string searchTerm)
         {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return BadRequest(new { message = "searchTerm is required" });
+            }
+
             var domainProducts = await _productService.SearchProductsByNameAsync(searchTerm);
             return Ok(_productAdapterMapper.ToAdapterProductList(domainProducts)); 
         }
@@ -114,6 +119,11 @@ namespace CunDropShipping.adapter.restful.v1.controller
         [HttpGet("filter/price")]
         public async Task<ActionResult<List<AdapterProductEntity>>> FilterProductByPriceRange([FromQuery] decimal minPrice, [FromQuery] decimal maxPrice)
         {
+            if (minPrice > maxPrice)
+            {
+                return BadRequest(new { message = "minPrice cannot be greater than maxPrice" });
+            }
+
             var domainProducts = await _productService.FilterProductsByPriceRangeAsync(minPrice, maxPrice);
             return Ok(_productAdapterMapper.ToAdapterProductList(domainProducts));
         }
@@ -121,6 +131,11 @@ namespace CunDropShipping.adapter.restful.v1.controller
         [HttpGet("filter/stock")]
         public async Task<ActionResult<List<AdapterProductEntity>>> GetProductsWithLowStock([FromQuery] int stockThreshold)
         {
+            if (stockThreshold < 0)
+            {
+                return BadRequest(new { message = "stockThreshold cannot be negative" });
+            }
+
             var domainProducts = await _productService.GetProductsWithLowStockAsync(stockThreshold);
             return Ok(_productAdapterMapper.ToAdapterProductList(domainProducts));
         }
