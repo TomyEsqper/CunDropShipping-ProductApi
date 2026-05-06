@@ -22,7 +22,7 @@ public class ProductServiceImp : IProductService
     public async Task<DomainProductEntity> SaveProductAsync(DomainProductEntity product)
     {
         var subCat = await GetSubCategoryAsync(product.SubCategoryId);
-        if (subCat == null) throw new KeyNotFoundException("SubCategory not found");
+        if (subCat == null) throw new KeyNotFoundException($"SubCategory with ID {product.SubCategoryId} not found");
         product.SubCategory = subCat;
 
         return await _productRepository.SaveProductAsync(product);
@@ -31,7 +31,7 @@ public class ProductServiceImp : IProductService
     public async Task<DomainProductEntity?> UpdateProductAsync(int id, DomainProductEntity product)
     {
         var subCat = await GetSubCategoryAsync(product.SubCategoryId);
-        if (subCat == null) throw new KeyNotFoundException("SubCategory not found");
+        if (subCat == null) throw new KeyNotFoundException($"SubCategory with ID {product.SubCategoryId} not found");
 
         product.SubCategory = subCat;
         return await _productRepository.UpdateProductAsync(id, product);
