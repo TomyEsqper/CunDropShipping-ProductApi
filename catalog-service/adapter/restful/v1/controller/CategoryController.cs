@@ -59,10 +59,20 @@ public class CategoryController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteCategory(int id)
     {
-        var deletedCategory = await _categoryService.DeleteCategoryAsync(id);
-        
-        if (deletedCategory == null) return NotFound();
-        
-        return NoContent();
+        try
+        {
+            var deletedCategory = await _categoryService.DeleteCategoryAsync(id);
+
+            if (deletedCategory == null)
+            {
+                return NotFound(new { message = $"Category with ID {id} not found" });
+            }
+
+            return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(new { message = ex.Message });
+        }
     }
 }
